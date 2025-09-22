@@ -1,6 +1,9 @@
-package com.ivan.sai;
+package com.ivan.sai.lab1;
 
-class Main {
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+class TowerOfHanoi {
     public static void main(String[] args)
     {
         int diskNumber = 3;
@@ -15,9 +18,7 @@ class Main {
             return;
         }
         towerOfHanoi(n - 1, fromRod, auxiliaryRod, toRod);
-        System.out.println("Move disk " + n + " from rod "
-                + fromRod + " to rod "
-                + toRod);
+        log.info("Move disk {} from rod {} to rod {}", n, fromRod, toRod);
         towerOfHanoi(n - 1, auxiliaryRod, toRod, fromRod);
     }
 }
