@@ -24,89 +24,87 @@ public class FamilyTree {
         parentToChild.computeIfAbsent(parent, k -> new ArrayList<>()).add(child);
     }
 
-    public boolean isFather(String f, String c) {
-        return males.contains(f) && parentToChild.getOrDefault(f, List.of()).contains(c);
+    public boolean isFather(String father, String child) {
+        return males.contains(father) && parentToChild.getOrDefault(father, List.of()).contains(child);
     }
 
-    public boolean isMother(String m, String c) {
-        return females.contains(m) && parentToChild.getOrDefault(m, List.of()).contains(c);
+    public boolean isMother(String mother, String child) {
+        return females.contains(mother) && parentToChild.getOrDefault(mother, List.of()).contains(child);
     }
 
-    public boolean isSibling(String x, String y) {
+    public boolean isSibling(String person1, String person2) {
         for (var entry : parentToChild.entrySet()) {
             List<String> children = entry.getValue();
-            if (children.contains(x) && children.contains(y) && !x.equals(y)) {
+            if (children.contains(person1) && children.contains(person2) && !person1.equals(person2)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isBrother(String b, String s) {
-        return males.contains(b) && isSibling(b, s);
+    public boolean isBrother(String brother, String sibling) {
+        return males.contains(brother) && isSibling(brother, sibling);
     }
 
-    public boolean isSister(String s, String b) {
-        return females.contains(s) && isSibling(s, b);
+    public boolean isSister(String sister, String sibling) {
+        return females.contains(sister) && isSibling(sister, sibling);
     }
 
-    public boolean isGrandparent(String gp, String gc) {
-        if (!parentToChild.containsKey(gp)) return false;
-        for (String parent : parentToChild.get(gp)) {
-            if (parentToChild.getOrDefault(parent, List.of()).contains(gc)) {
+    public boolean isGrandparent(String grandparent, String grandchild) {
+        if (!parentToChild.containsKey(grandparent)) return false;
+        for (String parent : parentToChild.get(grandparent)) {
+            if (parentToChild.getOrDefault(parent, List.of()).contains(grandchild)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isGrandfather(String gf, String gc) {
-        return males.contains(gf) && isGrandparent(gf, gc);
+    public boolean isGrandfather(String grandfather, String grandchild) {
+        return males.contains(grandfather) && isGrandparent(grandfather, grandchild);
     }
 
-    public boolean isGrandmother(String gm, String gc) {
-        return females.contains(gm) && isGrandparent(gm, gc);
+    public boolean isGrandmother(String grandmother, String grandchild) {
+        return females.contains(grandmother) && isGrandparent(grandmother, grandchild);
     }
 
-    public boolean isUncle(String u, String n) {
-        if (!males.contains(u)) return false;
+    public boolean isUncle(String uncle, String nieceOrNephew) {
+        if (!males.contains(uncle)) return false;
         for (var entry : parentToChild.entrySet()) {
             String parent = entry.getKey();
-            if (entry.getValue().contains(n) && isSibling(u, parent)) {
+            if (entry.getValue().contains(nieceOrNephew) && isSibling(uncle, parent)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isAunt(String a, String n) {
-        if (!females.contains(a)) return false;
+    public boolean isAunt(String aunt, String nieceOrNephew) {
+        if (!females.contains(aunt)) return false;
         for (var entry : parentToChild.entrySet()) {
             String parent = entry.getKey();
-            if (entry.getValue().contains(n) && isSibling(a, parent)) {
+            if (entry.getValue().contains(nieceOrNephew) && isSibling(aunt, parent)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isAncestor(String a, String d) {
-        if (parentToChild.getOrDefault(a, List.of()).contains(d)) {
+    public boolean isAncestor(String ancestor, String descendant) {
+        if (parentToChild.getOrDefault(ancestor, List.of()).contains(descendant)) {
             return true;
         }
-        for (String child : parentToChild.getOrDefault(a, List.of())) {
-            if (isAncestor(child, d)) {
+        for (String child : parentToChild.getOrDefault(ancestor, List.of())) {
+            if (isAncestor(child, descendant)) {
                 return true;
             }
         }
         return false;
     }
 
-    // ---------- Приклад використання ----------
     public static void main(String[] args) {
         FamilyTree tree = new FamilyTree();
 
-        // Факти
         tree.addMale("John");
         tree.addMale("Michael");
         tree.addMale("David");
@@ -120,7 +118,6 @@ public class FamilyTree {
         tree.addParent("Linda", "Susan");
         tree.addParent("Michael", "David");
 
-        // Запити
         System.out.println("Is John father of Michael? " + tree.isFather("John", "Michael"));
         System.out.println("Is Linda mother of Michael? " + tree.isMother("Linda", "Michael"));
         System.out.println("Is Michael brother of Susan? " + tree.isBrother("Michael", "Susan"));
@@ -129,5 +126,7 @@ public class FamilyTree {
         System.out.println("Is Linda grandmother of David? " + tree.isGrandmother("Linda", "David"));
         System.out.println("Is Susan aunt of David? " + tree.isAunt("Susan", "David"));
         System.out.println("Is John ancestor of David? " + tree.isAncestor("John", "David"));
+        System.out.println("Is Michael father of John? " + tree.isFather("Michael", "John")); // false
+        System.out.println("Is David brother of Susan? " + tree.isBrother("David", "Susan")); // false
     }
 }
