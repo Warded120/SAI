@@ -1,13 +1,17 @@
 package com.ivan.sai.lab2;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class FamilyTree {
     private final Set<String> males = new HashSet<>();
     private final Set<String> females = new HashSet<>();
     private final Map<String, List<String>> parentToChild = new HashMap<>();
 
-    // ---------- Додавання фактів ----------
     public void addMale(String name) {
         males.add(name);
     }
@@ -20,7 +24,6 @@ public class FamilyTree {
         parentToChild.computeIfAbsent(parent, k -> new ArrayList<>()).add(child);
     }
 
-    // ---------- Предикати ----------
     public boolean isFather(String f, String c) {
         return males.contains(f) && parentToChild.getOrDefault(f, List.of()).contains(c);
     }
@@ -65,7 +68,6 @@ public class FamilyTree {
         return females.contains(gm) && isGrandparent(gm, gc);
     }
 
-    // ---------- Нові предикати ----------
     public boolean isUncle(String u, String n) {
         if (!males.contains(u)) return false;
         for (var entry : parentToChild.entrySet()) {
